@@ -34,14 +34,9 @@ def dissect(M, N, m, n):
     patterns = []
     for i_pat in list_pat:
         if check_pat(i_pat, m, n):
-            pat = []
-            for i_piece in i_pat:
-                (x1, x2, y1, y2) = i_piece
-                piece = (x1+M*y1, x2+M*y2)
-                pat.append(piece)
-            pat.sort()
-            if pat not in patterns:
-                patterns.append(pat)
+            i_pat.sort()
+            if i_pat not in patterns:
+                patterns.append(i_pat)
 
     return patterns
 
@@ -97,12 +92,23 @@ def split(piece, pat):
     return derivates
 
 
+def translate(piece, M):
+    """Translate the position of a tile in a pattern
+    from the form of (x1, x2, y1, y2) into (.., i+m*j, ..)
+    """
+    (x1, x2, y1, y2) = piece
+    poslist = []
+    m = x2 - x1 + 1
+    for j in range(y1, y2 + 1):
+        poslist.extend(range(x1 + M * j, x2 + 1 + M * j))
+    return tuple(poslist)
+
+
 def input_t():
     """get USER's input.
     Use turtle module to display.
     """
-    scr1 = turtle.Screen()
-    tup = eval(scr1.textinput('Input', \
+    tup = eval(turtle.textinput('Input', \
 '''Please input the size of the floor and the tile.
 Type in form of (M, N, m, n) where
     M*N is the size of the floor and
@@ -110,20 +116,22 @@ Type in form of (M, N, m, n) where
     return tup
 
 
-def choose_t(patterns):
+def choose_t(patterns, M):
     """Choose a pattern by USER.
     Use turtle module to display.
     """
     prompt1 = 'Choose one of the pattern following.\n'
     prompt2 = ''
     for i in range(len(patterns)):
-        pro = str(i) + '):\t' + str(patterns[i])
+        poslist = []
+        for i_piece in patterns[i]:
+            poslist.append(translate(i_piece, M))
+        pro = str(i) + '):\t' + str(poslist)
         prompt2 = prompt2 + pro + '\n'
     prompt3 = 'Type the number before the pattern:'
     prompt = prompt1 + prompt2 + prompt3
-    
-    scr2 = turtle.Screen()
-    num = int(scr2.numinput('Choose a pattern',\
+
+    num = int(turtle.numinput('Choose a pattern',\
                             prompt, 0, 0, len(patterns)-1))
     pattern = patterns[num]
     return pattern
@@ -133,31 +141,38 @@ def paint(pattern, M, N):
     """Paint the pattern chosen
     """
     turtle.width(4)
-    turtle.hideturtle()
+    turtle.shape('circle')
     ul = 500 / max(M, N) #unit length
     leb = - ul * M * 0.5 #left border
     upb = ul * N * 0.5 #up border
     turtle.fillcolor('lightgrey')
-    
+
     for i in pattern:
         turtle.begin_fill()
-        x1 = i[0] % M
-        y1 = i[0] // M
-        x2 = i[1] % M
-        y2 = i[1] // M
+        (x1, x2, y1, y2) = i
         le = leb + x1 * ul
         rt = leb + (x2+1) * ul
         up = upb - y1 * ul
         dn = upb - (y2+1) * ul
         turtle.penup()
         turtle.goto(le, up)
+        turtle.showturtle()
         turtle.pendown()
         turtle.goto(rt, up)
         turtle.goto(rt, dn)
         turtle.goto(le, dn)
         turtle.goto(le, up)
         turtle.end_fill()
-        
+        turtle.hideturtle()
+        for pos in translate(i, M):
+            turtle.penup()
+            x = pos % M + 0.5
+            y = pos // M + 0.9
+            turtle.goto(leb + ul * x, upb - ul * y)
+            turtle.write(arg=pos, align='center',
+                         font=('Arial', int(ul/2.5), 'normal'))
+            turtle.pendown()
+
 
 def main():
     """Main function.
@@ -165,7 +180,7 @@ def main():
     turtle.setup(600, 600)
     (M, N, m, n) = input_t()
     patterns = dissect(M, N, m, n)
-    pattern = choose_t(patterns)
+    pattern = choose_t(patterns, M)
     paint(pattern, M, N)
 
 
