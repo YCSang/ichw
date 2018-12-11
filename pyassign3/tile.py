@@ -9,7 +9,7 @@ import turtle
 
 
 def dissect(M, N, m, n):
-    """Main function of algebra.
+    """Main function.
     M and N refer to size of floor.
     m and n refer to size of tile.
     """
