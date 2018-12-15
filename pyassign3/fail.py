@@ -7,6 +7,7 @@ __email__ = 'johnbirdsang@pku.edu.cn'
 
 import turtle
 
+##This fuction Line 11-39 is added
 def recur(pat, M, N, m, n):
     is_Finished = True
     for i_piece in pat:
@@ -85,7 +86,7 @@ def check_pat(pat, m, n):
 ##        is_M = (M_ % m == 0) or (M_ % n == 0)
 ##        is_N = (N_ % m == 0) or (N_ % n == 0)
 
-        ##This part is added
+        ##This part Line 90-91 is added
         is_M = (M_ > m) or (M_ > n)
         is_N = (N_ > m) or (N_ > n)
         
@@ -215,7 +216,7 @@ def main():
     turtle.setup(600, 600)
     (M, N, m, n) = input_t()
     
-    ##This part is added
+    ##This part Line 220-224 is added
     global pats                         
     pats = []
     floor = [(0, M-1, 0, N-1)]
