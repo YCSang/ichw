@@ -7,7 +7,37 @@ __email__ = 'johnbirdsang@pku.edu.cn'
 
 import turtle
 
+def recur(pat, M, N, m, n):
+    is_Finished = True
+    for i_piece in pat:
+        is_Finished = is_Finished and check_tile(i_piece, m, n)
+    if is_Finished:
+        pat.sort()
+        if pat not in pats:
+            pats.append(pat[:])
+        return 0
+    if not check_pat(pat, m, n):
+        return 0
 
+    for piece in pat:
+        if not check_tile(piece, m, n):
+            (x1, x2, y1, y2) = piece
+            pat.remove(piece)
+            for i in range(x1, x2):
+                new_pieces = [(x1, i, y1, y2), (i+1, x2, y1, y2)]
+                pat.extend(new_pieces)
+                recur(pat, M, N, m, n)
+                for k in new_pieces:
+                    pat.remove(k)
+            for j in range(y1, y2):
+                new_pieces = [(x1, x2, y1, j), (x1, x2, j+1, y2)]
+                pat.extend(new_pieces)
+                recur(pat, M, N, m, n)
+                for k in new_pieces:
+                    pat.remove(k)
+            pat.append(piece)
+            
+            
 def dissect(M, N, m, n):
     """Main function.
     M and N refer to size of floor.
@@ -52,8 +82,13 @@ def check_pat(pat, m, n):
         M_ = x2 - x1 + 1
         N_ = y2 - y1 + 1
         is_Size = ((M_*N_) % (m*n) == 0)
-        is_M = (M_ % m == 0) or (M_ % n == 0)
-        is_N = (N_ % m == 0) or (N_ % n == 0)
+##        is_M = (M_ % m == 0) or (M_ % n == 0)
+##        is_N = (N_ % m == 0) or (N_ % n == 0)
+
+        ##This part is added
+        is_M = (M_ > m) or (M_ > n)
+        is_N = (N_ > m) or (N_ > n)
+        
         is_Piece = is_Size and is_M and is_N
         is_Pattern = is_Pattern and is_Piece
     return is_Pattern
@@ -179,7 +214,16 @@ def main():
     """
     turtle.setup(600, 600)
     (M, N, m, n) = input_t()
-    patterns = dissect(M, N, m, n)
+    
+    ##This part is added
+    global pats                         
+    pats = []
+    floor = [(0, M-1, 0, N-1)]
+    recur(floor, M, N, m, n)
+    print(len(pats))
+    
+##    patterns = dissect(M, N, m, n)
+    
     pattern = choose_t(patterns, M)
     paint(pattern, M, N)
 
