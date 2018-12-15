@@ -10,7 +10,8 @@ import time
 
 
 def tile(floor, pattern):
-    """Main function of agrithom.
+    """Main function of algorithm.
+    pos_h and pos_v can be consider as a mask.
     """
     if floor[2:] == '1' * M*N:
         pats.append(pattern[:])
