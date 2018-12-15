@@ -83,10 +83,6 @@ def check_pat(pat, m, n):
         M_ = x2 - x1 + 1
         N_ = y2 - y1 + 1
         is_Size = ((M_*N_) % (m*n) == 0)
-##        is_M = (M_ % m == 0) or (M_ % n == 0)
-##        is_N = (N_ % m == 0) or (N_ % n == 0)
-
-        ##This part Line 90-91 is added
         is_M = (M_ > m) or (M_ > n)
         is_N = (N_ > m) or (N_ > n)
         
@@ -216,7 +212,7 @@ def main():
     turtle.setup(600, 600)
     (M, N, m, n) = input_t()
     
-    ##This part Line 220-224 is added
+    ##This part Line 216-220 is added
     global pats                         
     pats = []
     floor = [(0, M-1, 0, N-1)]
